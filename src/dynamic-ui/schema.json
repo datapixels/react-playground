@@ -1,0 +1,78 @@
+{
+    "body": {
+        "elements": [
+            {
+                "element": "input",
+                "type": "text",
+                "field": "firstName",
+                "label": "First Name",
+                "placeholder": "Enter your first name",
+                "required": true,
+                "validation": {
+                    "minLength": 2,
+                    "maxLength": 50
+                }
+            },
+            {
+                "element": "input",
+                "type": "text",
+                "field": "lastName",
+                "label": "Last Name",
+                "placeholder": "Enter your last name",
+                "required": true,
+                "validation": {
+                    "minLength": 2,
+                    "maxLength": 50
+                }
+            },
+            {
+                "element": "input",
+                "type": "email",
+                "field": "email",
+                "label": "Email Address",
+                "placeholder": "your.email@example.com",
+                "required": true
+            },
+            {
+                "element": "input",
+                "type": "tel",
+                "field": "phone",
+                "label": "Phone Number",
+                "placeholder": "+1 (555) 000-0000",
+                "required": false
+            },
+            {
+                "element": "textarea",
+                "field": "message",
+                "label": "Message",
+                "placeholder": "Enter your message...",
+                "required": false,
+                "validation": {
+                    "maxLength": 500
+                }
+            },
+            {
+                "element": "select",
+                "field": "country",
+                "label": "Country",
+                "required": true,
+                "options": [
+                    { "label": "United States", "value": "us" },
+                    { "label": "Canada", "value": "ca" },
+                    { "label": "United Kingdom", "value": "uk" }
+                ]
+            },
+            {
+                "element": "checkbox",
+                "field": "subscribe",
+                "label": "Subscribe to newsletter",
+                "required": false
+            },
+            {
+                "element": "button",
+                "type": "submit",
+                "label": "Submit"
+            }
+        ]
+    }
+}
