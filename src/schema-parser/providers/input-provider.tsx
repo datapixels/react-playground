@@ -17,7 +17,7 @@ export function InputProvider({ element, form }: IProviderProps): React.ReactNod
                             variant="outlined"
                             margin="normal"
                             fullWidth
-                            defaultValue={state.value}
+                           value={state.value || ''}
                             onChange={(e) => handleChange(e.target.value)}
                             onBlur={handleBlur}
                             placeholder={element.placeholder as string}

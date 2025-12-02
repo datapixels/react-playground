@@ -1,4 +1,3 @@
-import CssBaseline from '@mui/material/CssBaseline';
 import './App.css'
 import { Box } from '@mui/material';
 import { SchemaParser } from './schema-parser/schema-parser';
@@ -10,6 +9,15 @@ import {
     QueryClient,
     QueryClientProvider,
 } from '@tanstack/react-query';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
+
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -38,7 +46,7 @@ function App() {
                                         {
                                             element: "input",
                                             type: "text",
-                                            field: "firstName",
+                                            field: "firstName", 
                                             label: "First Name",
                                             placeholder: "Enter your first name",
                                             required: true,
@@ -73,6 +81,18 @@ function App() {
                 },
             ],
         },
+        customActionTriggers: [
+            {
+                trigger: "firstName",
+                actions: [
+                    {
+                        "action": "setValue",
+                        "path": "lastName",
+                        "value": "Smith"
+                    }
+                ]
+            }
+        ]
     };
     const model: IDataset = {
         firstName: "John",
@@ -81,21 +101,23 @@ function App() {
 
     return (
         <>
-            <QueryClientProvider client={queryClient}>
+             <ThemeProvider theme={darkTheme}>
                 <CssBaseline />
-                <Box sx={{
-                    width: '100%',
-                    maxWidth: 600,
-                    margin: '2rem auto',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    flex: 1
-                }}>
+                <QueryClientProvider client={queryClient}>
+                    <Box sx={{
+                        width: '100%',
+                        maxWidth: 600,
+                        margin: '2rem auto',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        flex: 1
+                    }}>
 
-                    <WeatherWidget></WeatherWidget>
-                    {/* <SchemaParser schema={schema} model={model} componentRegistry={registry}></SchemaParser> */}
-                </Box>
-            </QueryClientProvider>
+                        {/* <WeatherWidget></WeatherWidget> */}
+                        <SchemaParser schema={schema} model={model} componentRegistry={registry}></SchemaParser>
+                    </Box>
+                </QueryClientProvider>
+            </ThemeProvider>
         </>
     )
 }

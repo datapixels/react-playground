@@ -1,5 +1,5 @@
 import type { IComponentRegistry, IJsonElement } from "./types/json-element";
-import type { ISchema } from "./types/schema";
+import type { ISchema, ICustomActionTrigger, ICustomAction } from "./types/schema";
 import type { ElementType } from "react";
 import type { IDataset } from "./types/dataset";
 import type { AnyFormApi } from "@tanstack/react-form";
@@ -13,12 +13,56 @@ type SchemaParserProps = {
     componentRegistry?: IComponentRegistry;
 };
 
+function evaluateTrigger(trigger: string, fieldName: string, formApi: AnyFormApi, actions: ICustomAction[]): void {
+    // Parse the trigger pattern (e.g., "model.firstName")
+    const triggerParts = trigger.split('.');
+    
+    // Check if trigger matches the field that just blurred
+    if (trigger === fieldName) {
+        // Execute all actions for this trigger
+        actions.forEach((action) => {
+            if (action.action === 'setValue' && action.path) {
+                formApi.setFieldValue(action.path, action.value)  // ✅ Use action data
+                console.log(`Action executed: setValue on ${action.path} to`, action.value);
+            }
+            // Add more action types here as needed (e.g., 'show', 'hide', 'disable', etc.)
+        });
+    }
+}
+
 export function SchemaParser({ schema, model, componentRegistry = registry }: SchemaParserProps) {
     const form = useForm({
         defaultValues: model,
         validationLogic: revalidateLogic(),
         onSubmit: (values) => {
             console.log("Form submitted with values:", values);
+        },
+
+        listeners: {
+            onMount: ({ formApi }) => {
+                console.log(formApi.state.values);
+            },
+
+            // onChange: ({ formApi, fieldApi }) => {
+            //     // autosave logic
+            //     if (formApi.state.isValid) {
+            //         formApi.handleSubmit()
+            //     }
+
+            //     // fieldApi represents the field that triggered the event.
+            //     console.log(fieldApi.name, fieldApi.state.value)
+            // },
+            onBlur: ({ formApi, fieldApi }) => {
+                console.log("Field blurred:", fieldApi.name, fieldApi.state.value);
+                
+                // Evaluate custom action triggers
+                if (schema.customActionTriggers) {
+                    schema.customActionTriggers.forEach((trigger: ICustomActionTrigger) => {
+                        evaluateTrigger(trigger.trigger, fieldApi.name, formApi, trigger.actions);
+                    });
+                }
+            },
+            onChangeDebounceMs: 500,
         },
         validators: {
             onDynamic: ({ value }) => {

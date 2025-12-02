@@ -9,7 +9,20 @@ export interface ITemplate {
     elements: IJsonElement[];
 }
 
+export interface ICustomAction {
+    action: string;
+    path?: string;
+    value?: any;
+    [key: string]: any;
+}
+
+export interface ICustomActionTrigger {
+    trigger: string;
+    actions: ICustomAction[];
+}
+
 export interface ISchema {
     body: IBody;
     templates?: ITemplate[];
+    customActionTriggers?: ICustomActionTrigger[];
 }
