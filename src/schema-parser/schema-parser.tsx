@@ -13,16 +13,81 @@ type SchemaParserProps = {
     componentRegistry?: IComponentRegistry;
 };
 
-function evaluateTrigger(trigger: string, fieldName: string, formApi: AnyFormApi, actions: ICustomAction[]): void {
-    // Parse the trigger pattern (e.g., "model.firstName")
-    const triggerParts = trigger.split('.');
+/**
+ * Evaluates conditional attributes (e.g., "hidden.if", "disabled.if")
+ * Returns an object with the attribute name and its evaluated boolean value
+ */
+export function evaluateConditionalAttributes(
+    attributes: Record<string, any> | undefined,
+    formValues: unknown
+): Record<string, any> {
+    if (!attributes) return {};
     
+    const evaluatedAttributes: Record<string, any> = {};
+    const values = formValues as Record<string, any>;
+    
+    Object.entries(attributes).forEach(([key, value]) => {
+        // Check if this is a conditional attribute (ends with .if)
+        if (key.endsWith('.if')) {
+            const attributeName = key.replace('.if', '');
+            
+            try {
+                // Create a function that evaluates the condition
+                // Pass model and form values as parameters for access in conditions
+                const conditionFn = new Function(
+                    'model',
+                    `return ${value};`
+                );
+                
+                // Execute the condition function with current form values
+                const result = conditionFn(values);
+                evaluatedAttributes[attributeName] = result;
+                
+                console.log(`Attribute condition "${key}: ${value}" evaluated to:`, result);
+            } catch (error) {
+                console.error(`Error evaluating attribute condition "${key}: ${value}":`, error);
+                evaluatedAttributes[attributeName] = false;
+            }
+        } else {
+            // Regular attribute, pass through as-is
+            evaluatedAttributes[key] = value;
+        }
+    });
+    
+    return evaluatedAttributes;
+}
+
+function evaluateTrigger(trigger: string, fieldName: string, formApi: AnyFormApi, actions: ICustomAction[]): void {
     // Check if trigger matches the field that just blurred
     if (trigger === fieldName) {
+        // Get all form values for condition evaluation
+        const formValues = formApi.state.values;
+        
         // Execute all actions for this trigger
         actions.forEach((action) => {
-            if (action.action === 'setValue' && action.path) {
-                formApi.setFieldValue(action.path, action.value)  // ✅ Use action data
+            // Evaluate condition if it exists
+            let shouldExecute = true;
+            if (action.condition) {
+                try {
+                    // Create a function that evaluates the condition
+                    // Pass form values as individual variables
+                    const conditionFn = new Function(
+                        ...Object.keys(formValues),
+                        `return ${action.condition};`
+                    );
+                    
+                    // Execute the condition function with current form values
+                    shouldExecute = conditionFn(...Object.values(formValues));
+                    console.log(`Condition "${action.condition}" evaluated to:`, shouldExecute);
+                } catch (error) {
+                    console.error(`Error evaluating condition "${action.condition}":`, error);
+                    shouldExecute = false;
+                }
+            }
+            
+            // Execute action if condition is met
+            if (shouldExecute && action.action === 'setValue' && action.path) {
+                formApi.setFieldValue(action.path, action.value);
                 console.log(`Action executed: setValue on ${action.path} to`, action.value);
             }
             // Add more action types here as needed (e.g., 'show', 'hide', 'disable', etc.)
