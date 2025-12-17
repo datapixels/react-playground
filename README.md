@@ -71,3 +71,6 @@ export default defineConfig([
   },
 ])
 ```
+
+
+https://gist.github.com/dariuscosden/52dc2376f05c7617f8ddc5fe7c5a41af?utm_source=importreact.beehiiv.com&utm_medium=newsletter&utm_campaign=react-design-patterns
