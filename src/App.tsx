@@ -1,17 +1,13 @@
 import './App.css'
-import { Box } from '@mui/material';
-import { SchemaParser } from './schema-parser/schema-parser';
 import type { ISchema } from './schema-parser/types/schema';
-import { registry } from './schema-parser/component-registry';
 import type { IDataset } from './schema-parser/types/dataset';
-import { WeatherWidget } from './components/WeatherWidget/WeatherWidget';
 import {
-    QueryClient,
     QueryClientProvider,
 } from '@tanstack/react-query';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { ZustandPlayground } from './components/ZustandPlayground/ZustandPlayground';
+import { Layout } from './components/Layout/Layout';
+import { queryClient } from './components/ZustandPlayground/utils/query-client';
 
 const darkTheme = createTheme({
   palette: {
@@ -20,13 +16,7 @@ const darkTheme = createTheme({
 });
 
 
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            retry: 0,
-        },
-    },
-})
+
 
 
 function App() {
@@ -138,20 +128,7 @@ function App() {
              <ThemeProvider theme={darkTheme}>
                 <CssBaseline />
                 <QueryClientProvider client={queryClient}>
-                    <Box sx={{
-                        width: '100%',
-                        maxWidth: 600,
-                        margin: '2rem auto',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        flex: 1
-                    }}>
-
-                        {/* <WeatherWidget></WeatherWidget> */}
-                        {/* <SchemaParser schema={schema} model={model} componentRegistry={registry}></SchemaParser> */}
-                        <ZustandPlayground></ZustandPlayground>
-                        <ZustandPlayground></ZustandPlayground>
-                    </Box>
+                    <Layout />
                 </QueryClientProvider>
             </ThemeProvider>
         </>

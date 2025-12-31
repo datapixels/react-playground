@@ -21,8 +21,34 @@ export interface ICustomActionTrigger {
     actions: ICustomAction[];
 }
 
+export interface IDatasetStandardField {
+    name: string;
+    type: string;
+    default?: any;
+}
+
+export interface IDatasetDatasourceField {
+    name: string;
+    collection: boolean
+    datasource: string | number;
+}
+
 export interface ISchema {
     body: IBody;
     templates?: ITemplate[];
     customActionTriggers?: ICustomActionTrigger[];
+    datasets: [
+        {
+            name: string;
+            fields: (IDatasetStandardField | IDatasetDatasourceField)[];
+        }
+    ],
+    datasources?: [
+        {
+            id: string | number;
+            remote: string;
+            action: string;
+            parameters?: Record<string, any>;
+        }
+    ]
 }
