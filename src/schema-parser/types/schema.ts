@@ -1,3 +1,4 @@
+import type { IDataset } from "./dataset";
 import type { IJsonElement } from "./json-element";
 
 export interface IBody {
@@ -21,28 +22,11 @@ export interface ICustomActionTrigger {
     actions: ICustomAction[];
 }
 
-export interface IDatasetStandardField {
-    name: string;
-    type: string;
-    default?: any;
-}
-
-export interface IDatasetDatasourceField {
-    name: string;
-    collection: boolean
-    datasource: string | number;
-}
-
 export interface ISchema {
     body: IBody;
     templates?: ITemplate[];
     customActionTriggers?: ICustomActionTrigger[];
-    datasets: [
-        {
-            name: string;
-            fields: (IDatasetStandardField | IDatasetDatasourceField)[];
-        }
-    ],
+    datasets: IDataset[];
     datasources?: [
         {
             id: string | number;

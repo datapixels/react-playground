@@ -19,7 +19,7 @@ interface TestListProps {
   /** initial selected index (default 0) */
   initialIndex?: number;
   /** called when selection changes with the selected id (string | number) */
-  onSelectionChange?: (id: string | number) => void;
+  onSelectionChange?: (id: string | TestListItem) => void;
 }
 
 export default function TestList({
@@ -36,7 +36,7 @@ export default function TestList({
   const handleListItemClick = (
     _event: React.MouseEvent<HTMLDivElement, MouseEvent>,
     index: number,
-    id: string | number,
+    id: string | TestListItem,
   ) => {
     setSelectedIndex(index);
     onSelectionChange?.(id);
@@ -53,7 +53,7 @@ export default function TestList({
             <ListItemButton
               key={item.id ?? i}
               selected={selectedIndex === i}
-              onClick={(event) => handleListItemClick(event, i, item.id ?? i)}
+              onClick={(event) => handleListItemClick(event, i, item ?? i)}
             >
               {/* only show icons for the first two items to keep parity with the original example */}
               {i === 0 || i === 1 ? (

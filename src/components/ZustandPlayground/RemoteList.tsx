@@ -2,16 +2,15 @@ import { useQuery } from "@tanstack/react-query";
 import TestList from "./TestList";
 import type { Datasource } from "./utils/datasource";
 import { inflateParameters } from "./utils/inflate-parameters";
-import { useForm, useStore } from "@tanstack/react-form";
+import type { ReactFormExtendedApi } from "@tanstack/react-form";
 
 export type RemoteListProps = {
     datasource: Datasource;
-    form: ReturnType<typeof useForm>
+    form: ReactFormExtendedApi<any, any, any, any, any, any, any, any, any, any, any, any>,
+    onSelectionChange?: (id: string | any) => void;
 };
 
-export function RemoteList({datasource, form}: RemoteListProps) {
-    console.log("Rendering RemoteList");
-
+export function RemoteList({datasource, form, onSelectionChange}: RemoteListProps) {
     const parameters = inflateParameters(
             datasource['definition'].parameters,
              form
@@ -34,5 +33,5 @@ export function RemoteList({datasource, form}: RemoteListProps) {
         primary: item.title || `Item ${item.id}`,
     }));
 
-    return <TestList items={items} />;
+    return <TestList items={items} onSelectionChange={onSelectionChange} />;
 }

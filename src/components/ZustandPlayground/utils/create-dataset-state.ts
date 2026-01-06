@@ -1,9 +1,11 @@
+import type { IDataset } from "../../../schema-parser/types/dataset";
 import type { ISchema } from "../../../schema-parser/types/schema";
 import { Datasource } from "./datasource";
 
 export type IModel = {
     [key: string]: any;
     getDirtyModel: () => Record<string, any>;
+    __definition: IDataset;
 };
 
 export function createDatasetState(schema: ISchema, context: Record<string, any>): IModel {
@@ -17,7 +19,8 @@ export function createDatasetState(schema: ISchema, context: Record<string, any>
             return {
                // Implementation of dirty model tracking can be added here
             };
-        }
+        },
+        __definition: dataset
     };
     for (const field of dataset.fields) {
         if ('collection' in field && field.collection === true) {
@@ -36,8 +39,8 @@ export function createDatasetState(schema: ISchema, context: Record<string, any>
 
             model[field.name] = new Datasource(definition);
         } else {
-            // initialize other fields as null
-            model[field.name] = null;
+            // initialize other fields as undefined
+            model[field.name] = field.default ?? undefined;
         }
     }
 
