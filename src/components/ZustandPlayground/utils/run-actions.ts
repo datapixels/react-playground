@@ -1,4 +1,3 @@
-import { th } from 'zod/v4/locales';
 import { getValueOnPath } from './get-value-on-path';
 
 export type Action = {
@@ -27,15 +26,6 @@ export function runActions(actions: Action[], formApi: any) {
             if (path.endsWith('()')) {
                 return getValueOnPath(formApi.state.values, path);
             }
-
-            // // Otherwise, resolve the parent object and call the method on it to preserve `this`
-            // const parts = path.split('.');
-            // const methodName = parts.pop();
-            // const parentPath = parts.join('.');
-            // const parent = getValueOnPath(formApi.state.values, parentPath);
-            // if (parent && methodName && typeof parent[methodName] === 'function') {
-            //     return parent[methodName]();
-            // }
         }
 
         // future action types (e.g. setValidation) can be handled here

@@ -219,9 +219,9 @@ export function DynamicSetExample() {
                 <h3>TestList Example</h3>
                 <TestList
                     items={testListItems}
-                    onSelectionChange={(id) =>
+                    onSelectionChange={(item) =>
                         form.setFieldValue(
-                            "model.selectedId", id
+                            "model.selectedId", item.id
                         )
                     }
                 />
