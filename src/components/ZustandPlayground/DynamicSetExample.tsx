@@ -1,7 +1,7 @@
 import { getValueOnPath } from './utils/get-value-on-path';
 import { runTriggers, type Trigger } from './utils/run-triggers';
 import TestList from './TestList';
-import { TextField } from '@mui/material';
+import { Input, TextField } from '@mui/material';
 import { formOptions, useForm, useStore } from '@tanstack/react-form';
 import { createDatasetState, type IModel } from './utils/create-dataset-state';
 import type { ISchema } from '../../schema-parser/types/schema';
@@ -9,6 +9,7 @@ import { RemoteList } from './RemoteList';
 import type { Datasource } from './utils/datasource';
 import { useMutation } from '@tanstack/react-query';
 import { MiniForm } from './MiniForm';
+import InputLookup from '../../components/InputLookup';
 
 type DynamicAction = {
     getValueOnPath: (obj: Record<string, any>, path: string) => any
@@ -141,6 +142,8 @@ export function DynamicSetExample() {
 
     // const model = useStore(form.store, (state) => state.values.model);
 
+    const siteCode = useStore(form.store, (state) => state.values.actions.getValueOnPath(state.values, "model.siteCode"));
+
     const testListItems = [{ id: "ASSET-A", primary: 'Item 1' }, { id: "ASSET-B", primary: 'Item 2' }, { id: "ASSET-C", primary: 'Item 3' }];
 
     return (
@@ -192,6 +195,24 @@ export function DynamicSetExample() {
                     )}
                 />
 
+                <form.Field
+                    name="model.siteCode"
+                    children={(field) => (
+                        <>
+                          <InputLookup 
+                            remote="Asset" 
+                            action="GetAssets"
+                            codeField="code"
+                            descriptionField="description"
+                            lookupTemplate="assetLookup"
+                            label="Site Code"
+                            onChange={(value) => field.handleChange(value?.code)}
+                          />
+                        </>
+                    )}
+                />
+
+                    <label>{siteCode}</label>
 
                 <button type="button" onClick={() => {
                     form.setFieldValue("model.code", "NewCode" + Math.floor(Math.random() * 1000));
