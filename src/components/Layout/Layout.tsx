@@ -16,6 +16,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { DynamicSetExample } from '../ZustandPlayground/DynamicSetExample';
+import { DialogExample } from './DialogExample';
 
 const drawerWidth = 240;
 
@@ -145,7 +146,7 @@ export function Layout() {
                     mt: 8,
                 }}
             >
-                <DynamicSetExample />
+                <DialogExample />
             </Box>
         </Box>
     );
