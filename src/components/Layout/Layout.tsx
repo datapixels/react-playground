@@ -17,6 +17,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { DynamicSetExample } from '../ZustandPlayground/DynamicSetExample';
 import { DialogExample } from './DialogExample';
+import { TanstackQueryRefresh } from './TanstackQueryRefresh';
 
 const drawerWidth = 240;
 
@@ -146,6 +147,7 @@ export function Layout() {
                     mt: 8,
                 }}
             >
+                <TanstackQueryRefresh />
                 <DialogExample />
             </Box>
         </Box>
