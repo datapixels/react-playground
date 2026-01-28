@@ -5,6 +5,9 @@ import TextField from '@mui/material/TextField';
 import Grid from "@mui/material/Grid";
 import { useMemo } from "react";
 import InputLabel from "@mui/material/InputLabel";
+import { ModalHeader } from "./ModalHeader";
+import { Refresh } from "@mui/icons-material";
+import IconButton from "@mui/material/IconButton";
 
 // Type definitions
 interface FormFieldProps {
@@ -29,76 +32,76 @@ interface FormFieldProps {
 }
 
 function FieldInfo({ field }: { field: AnyFieldApi }) {
-  return (
-    <>
-      {field.state.meta.isTouched && !field.state.meta.isValid
-        ? field.state.meta.errors.map((err) => (
-            <em key={err.message}>{err.message}</em>
-          ))
-        : null}
-      {field.state.meta.isValidating ? 'Validating...' : null}
-    </>
-  )
+    return (
+        <>
+            {field.state.meta.isTouched && !field.state.meta.isValid
+                ? field.state.meta.errors.map((err) => (
+                    <em key={err.message}>{err.message}</em>
+                ))
+                : null}
+            {field.state.meta.isValidating ? 'Validating...' : null}
+        </>
+    )
 }
 // Reusable Form Field Component using MUI components
 function FormField({
-  field,
-  label,
-  type = "text",
-  placeholder = "",
-  required = false,
+    field,
+    label,
+    type = "text",
+    placeholder = "",
+    required = false,
 }: FormFieldProps) {
-  const hasError = useMemo(
-    () => field.state.meta.isTouched && !!field.state.meta.errors?.length,
-    [field.state.meta.isTouched, field.state.meta.errors]
-  );
+    const hasError = useMemo(
+        () => field.state.meta.isTouched && !!field.state.meta.errors?.length,
+        [field.state.meta.isTouched, field.state.meta.errors]
+    );
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (type === "number") {
-      field.handleChange(value === '' ? '' : Number(value));
-    } else {
-      field.handleChange(value);
-    }
-  };
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        if (type === "number") {
+            field.handleChange(value === '' ? '' : Number(value));
+        } else {
+            field.handleChange(value);
+        }
+    };
 
-  return (
-    <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-      {/* Label takes e.g. 3/12 on larger screens, full on mobile */}
-      <Grid size={{ xs: 12, sm: 3 }}>
-        <InputLabel
-          htmlFor={field.name}
-          required={required}
-          error={hasError}
-          sx={{
-            textAlign: { xs: 'left', sm: 'right' },
-            pt: { xs: 0, sm: 1 },           // less top padding on mobile
-            fontWeight: 'medium',
-          }}
-        >
-          {label}
-        </InputLabel>
-      </Grid>
+    return (
+        <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
+            {/* Label takes e.g. 3/12 on larger screens, full on mobile */}
+            <Grid size={{ xs: 12, sm: 3 }}>
+                <InputLabel
+                    htmlFor={field.name}
+                    required={required}
+                    error={hasError}
+                    sx={{
+                        textAlign: { xs: 'left', sm: 'right' },
+                        pt: { xs: 0, sm: 1 },           // less top padding on mobile
+                        fontWeight: 'medium',
+                    }}
+                >
+                    {label}
+                </InputLabel>
+            </Grid>
 
-      {/* Input takes remaining space */}
-      <Grid size={{ xs: 12, sm: 9 }}>
-        <TextField
-          id={field.name}
-          name={field.name}
-          type={type}
-          placeholder={placeholder}
-          value={field.state.value ?? ''}
-          onBlur={field.handleBlur}
-          onChange={handleChange}
-          error={hasError}
-          helperText={<FieldInfo field={field} />}
-          required={required}
-          fullWidth
-          variant="standard"   // or "outlined" if preferred
-        />
-      </Grid>
-    </Grid>
-  );
+            {/* Input takes remaining space */}
+            <Grid size={{ xs: 12, sm: 9 }}>
+                <TextField
+                    id={field.name}
+                    name={field.name}
+                    type={type}
+                    placeholder={placeholder}
+                    value={field.state.value ?? ''}
+                    onBlur={field.handleBlur}
+                    onChange={handleChange}
+                    error={hasError}
+                    helperText={<FieldInfo field={field} />}
+                    required={required}
+                    fullWidth
+                    variant="standard"   // or "outlined" if preferred
+                />
+            </Grid>
+        </Grid>
+    );
 }
 export function DialogExample() {
     const schema = zod.object(
@@ -136,7 +139,41 @@ export function DialogExample() {
 
 
     return (
-        <Box width={600}>
+        <Box width={600} sx={{ border: "1px solid gray", p: 2, borderRadius: 2 }}>
+
+            <ModalHeader
+                title="Gerhard"
+                secondaryInfoNode={<>[Code] Description</>}
+                primaryActions={
+                    [
+                        {
+                            label: "Refresh",
+                            icon: <Refresh/>,
+                            onClick: ()=> {
+                                console.log("refresh")
+                            }
+                        }
+                    ]
+                }
+                secondaryActions={
+                    [
+                        {
+                            label: "Set Active",
+                            onClick: ()=> { console.log("clicked")
+
+                            }
+                        },
+                        {
+                            label: "Accept Development",
+                            onClick: ()=> {console.log("test")}
+                        }
+                    ]
+                }
+                
+
+            >
+
+            </ModalHeader>
             <form
                 onSubmit={(e) => {
                     e.preventDefault()
@@ -150,11 +187,11 @@ export function DialogExample() {
                         name="model.firstName"
                         children={(field) => {
                             return (
-                                    <FormField
-                                        field={field}
-                                        label="First Name:"
-                                        required={true}
-                                    />
+                                <FormField
+                                    field={field}
+                                    label="First Name:"
+                                    required={true}
+                                />
                             )
                         }}
                     />

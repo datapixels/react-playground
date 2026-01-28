@@ -147,7 +147,7 @@ export function Layout() {
                     mt: 8,
                 }}
             >
-                <TanstackQueryRefresh />
+                {/* <TanstackQueryRefresh /> */}
                 <DialogExample />
             </Box>
         </Box>
