@@ -18,12 +18,18 @@ import Typography from '@mui/material/Typography';
 import { DynamicSetExample } from '../ZustandPlayground/DynamicSetExample';
 import { DialogExample } from './DialogExample';
 import { TanstackQueryRefresh } from './TanstackQueryRefresh';
+import { SideMenu } from '../SideMenu/SideMenu';
+import { useSideMenu } from '../SideMenu/useSideMenu';
+import { TestComponent } from '../SideMenu/TestComponent';
 
 const drawerWidth = 240;
 
 export function Layout() {
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [isClosing, setIsClosing] = React.useState(false);
+    const pushToSideMenu = useSideMenu((state)=> state.push);
+    const popSideMenu = useSideMenu(state=> state.pop)
+    const stack = useSideMenu(state=> state.stack);
 
     const handleDrawerClose = () => {
         setIsClosing(true);
@@ -148,7 +154,17 @@ export function Layout() {
                 }}
             >
                 {/* <TanstackQueryRefresh /> */}
-                <DialogExample />
+                {/* <DialogExample /> */}
+
+                    <button onClick={
+                        ()=> pushToSideMenu(
+                            <TestComponent></TestComponent>)}>Add</button>
+                          <button onClick={()=>popSideMenu()}>
+                        Remove                    </button>
+                <SideMenu></SideMenu>
+
+
+            
             </Box>
         </Box>
     );
