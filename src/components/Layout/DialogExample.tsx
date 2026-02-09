@@ -1,5 +1,5 @@
 import Box from "@mui/material/Box";
-import { revalidateLogic, useForm, type AnyFieldApi } from "@tanstack/react-form";
+import { revalidateLogic, useForm, useStore, type AnyFieldApi } from "@tanstack/react-form";
 import zod from "zod";
 import TextField from '@mui/material/TextField';
 import Grid from "@mui/material/Grid";
@@ -8,6 +8,7 @@ import InputLabel from "@mui/material/InputLabel";
 import { ModalHeader } from "./ModalHeader";
 import { Refresh } from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
+import { runProcess, type ProcessDefinition } from "../../process/process-runner";
 
 // Type definitions
 interface FormFieldProps {
@@ -119,7 +120,9 @@ export function DialogExample() {
 
     const form = useForm({
         defaultValues: {
-
+            model: {
+                mySum: 0,
+            }
         },
         onSubmit: async ({ value }) => {
             // Do something with form data
@@ -136,11 +139,11 @@ export function DialogExample() {
         },
     });
 
-
+    const mySum = useStore(form.store, (state) => state.values.model.mySum);
 
     return (
         <Box width={600} sx={{ border: "1px solid gray", p: 2, borderRadius: 2 }}>
-
+            {mySum}
             <ModalHeader
                 title="Gerhard"
                 secondaryInfoNode={<>[Code] Description</>}
@@ -148,8 +151,8 @@ export function DialogExample() {
                     [
                         {
                             label: "Refresh",
-                            icon: <Refresh/>,
-                            onClick: ()=> {
+                            icon: <Refresh />,
+                            onClick: () => {
                                 console.log("refresh")
                             }
                         }
@@ -159,17 +162,18 @@ export function DialogExample() {
                     [
                         {
                             label: "Set Active",
-                            onClick: ()=> { console.log("clicked")
+                            onClick: () => {
+                                console.log("clicked")
 
                             }
                         },
                         {
                             label: "Accept Development",
-                            onClick: ()=> {console.log("test")}
+                            onClick: () => { console.log("test") }
                         }
                     ]
                 }
-                
+
 
             >
 
@@ -212,6 +216,39 @@ export function DialogExample() {
                     selector={(state) => [state.canSubmit, state.isSubmitting]}
                     children={([canSubmit, isSubmitting]) => (
                         <>
+                            <button type="button" onClick={
+                                () => {
+                                    const sampleProcess: ProcessDefinition = {
+                                        steps: {
+                                            "start": {
+                                                system: "console",
+                                                action: "log",
+                                                args: { message: "Process started" },
+                                                next_step: "call_api"
+                                            },
+                                            "call_api": {
+                                                system: "api",
+                                                action: "call",
+                                                args: { remote: "WorkOrder", action: "get_users", parameters: {} },
+                                                next_step: "add_numbers"
+                                            },
+                                            "add_numbers": {
+                                                system: "math",
+                                                action: "add",
+                                                args: { a: 5, b: 10, target: "$data.mySum" },
+                                                next_step: "set_sum"
+                                            },
+                                            "set_sum": {
+                                                system: "state",
+                                                action: "setValue",
+                                                args: { path: "model.mySum", value: "$data.mySum" },
+                                            }
+                                        }
+                                    }
+                                    runProcess(sampleProcess, form);
+                                }}>
+                                Run process
+                            </button>
                             <button type="submit" disabled={!canSubmit}>
                                 {isSubmitting ? '...' : 'Submit'}
                             </button>
